@@ -1,72 +1,56 @@
-const { resolve } = require('mongodb/lib/core/topologies/read_preference');
 const redis = require('redis');
 
 class RedisClient {
   constructor() {
     this.redisClient = redis.createClient();
-    this.redisconnected = false;
-  }
+    this.redisClient.on('error', (err) => {
+      console.log('Error:', err);
+    });
 
-  connectRedis = async () => {
+    this.redisconnected = false;
     this.redisClient.on('connect', () => {
       this.redisconnected = true;
     });
-
-    this.redisClient.on('error', (err) => {
-      console.log('Error ' + err);
-      this.redisconnected = false;
-    })
-    
   }
 
-  isAlive = () => {
+  isAlive() {
     return this.redisconnected;
   }
 
-  get = async (key) => {
+  async get(key) {
     return new Promise((resolve, reject) => {
-      if (!this.isAlive()) {
-        this.connectRedis();
-      }
       this.redisClient.get(key, (err, reply) => {
         if (err) {
           reject(err);
         } else {
           resolve(reply);
         }
-      })
-    })
+      });
+    });
   }
 
-  set = async (key, value, duration) => {
+  async set(key, value, duration) {
     return new Promise((resolve, reject) => {
-      if (!this.isAlive()) {
-        this.connect();
-      }
       this.redisClient.set(key, value, 'EX', duration, (err, reply) => {
         if (err) {
           reject(err);
         } else {
           resolve(reply);
         }
-      })
-    })
+      });
+    });
   }
 
-  del = async (key) => {
+  async del(key) {
     return new Promise((resolve, reject) => {
-      if (!this.isAlive()) {
-        this.connect();
-      }
       this.redisClient.del(key, (err, reply) => {
         if (err) {
           reject(err);
         } else {
           resolve(reply);
         }
-      })
-    })
-    
+      });
+    });
   }
 }
 
