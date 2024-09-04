@@ -4,6 +4,7 @@ const dbClient = require('../utils/db');
 class UsersController {
   static async postNew(req, res) {
     const { email, password } = req.body;
+
     if (!email) {
       return res.status(400).json({ message: 'Missing email' });
     }
@@ -14,7 +15,7 @@ class UsersController {
 
     const existingUser = await dbClient.db.collection('users').findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Already exists' });
+      return res.status(400).json({ message: 'Already exist' });
     }
 
     const hashedPassword = sha1(password);
@@ -28,7 +29,7 @@ class UsersController {
       const result = await dbClient.db.collection('users').insertOne(newUser);
       return res.status(201).json({ id: result.insertedId, email });
     } catch (err) {
-      return res.status(500).json({ message: 'An error occured while creating the user' });
+      return res.status(500).json({ message: 'An error occurred while creating the user' });
     }
   }
 }
