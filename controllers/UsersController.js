@@ -2,7 +2,7 @@ const sha1 = require('sha1');
 const dbClient = require('../utils/db');
 
 class UserController {
-  static async createUser(req, res) {
+  static async postNew(req, res) {
     const { email, password } = req.body;
     if (!email) {
       return res.status(400).json({ message: 'Missing email' });
