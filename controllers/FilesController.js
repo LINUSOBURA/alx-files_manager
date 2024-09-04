@@ -223,6 +223,7 @@ class FilesController {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   static async getFile(req, res) {
     const fileId = req.params.id;
 
