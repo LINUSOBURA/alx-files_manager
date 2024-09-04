@@ -1,7 +1,7 @@
 const sha1 = require('sha1');
 const dbClient = require('../utils/db');
 
-class UserController {
+class UsersController {
   static async postNew(req, res) {
     const { email, password } = req.body;
     if (!email) {
@@ -12,9 +12,9 @@ class UserController {
       return res.status(400).json({ message: 'Missing password' });
     }
 
-    const existingUser = await dbClient.db.collection('users').findone({ email });
+    const existingUser = await dbClient.db.collection('users').findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Already exists' });
     }
 
     const hashedPassword = sha1(password);
@@ -33,4 +33,4 @@ class UserController {
   }
 }
 
-module.exports = UserController;
+module.exports = UsersController;
